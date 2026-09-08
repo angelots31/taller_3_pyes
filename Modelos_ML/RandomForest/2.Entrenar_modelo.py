@@ -82,5 +82,5 @@ try:
 except FileNotFoundError:
     log("ERROR")
     print("❌ No se encontró 'data/dataset_medico_ampliado.csv'")
-    print("👉 Ejecuta primero '1.Crear_Dataset_Mejorado.py'")
+    print("👉 Ejecuta primero '1.Crear_dataset.py'")
     exit(1)
