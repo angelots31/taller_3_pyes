@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Precios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #fafafa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #1a1a1a;
+            background: #fafafa;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #6c63ff;
+            background: #fff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            border: none;
+            border-radius: 10px;
+            background: #6c63ff;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background: #5a52d5;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .result.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #16a34a;
+        }
+
+        .result.error .result-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #dc2626;
+        }
+
+        .result-area {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Predicción de Viviendas</h1>
+        <p class="subtitle">Ingresa la superficie en metros cuadrados</p>
+
+        <form method="POST" action="{% url 'predict' %}">
+            {% csrf_token %}
+            <label for="area_m2">Superficie</label>
+            <input
+                type="number"
+                id="area_m2"
+                name="area_m2"
+                step="0.1"
+                min="0.1"
+                placeholder="Ej: 82.5"
+                value="{{ area_m2|default:'' }}"
+                required
+            >
+            <button type="submit">Predecir precio</button>
+        </form>
+
+        {% if predicted_price is not None %}
+        <div class="result success">
+            <div class="result-label">Precio estimado</div>
+            <div class="result-value">${{ predicted_price }}</div>
+            <div class="result-area">Para {{ area_m2 }} m²</div>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="result error">
+            <div class="result-value">{{ error }}</div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
