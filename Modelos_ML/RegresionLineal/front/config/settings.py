@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -65,4 +66,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Backend API URL
-BACKEND_API_URL = 'http://back:8000'
+BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'http://back:8000')
