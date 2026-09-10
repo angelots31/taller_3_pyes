@@ -65,14 +65,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Backend API URL
-BACKEND_API_URL = os.environ.get('BACKEND_API_URL', '')
+# Backend API URL. Falls back to the Railway backend URL if the env var is missing,
+# so the app still boots; the env var takes precedence when set.
+BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'https://bloback.up.railway.app')
 
-if not BACKEND_API_URL:
-    raise ValueError(
-        'BACKEND_API_URL environment variable is not set. '
-        'Please set it in Railway to the URL of your backend service '
-        '(e.g. https://your-backend.up.railway.app)'
+if not os.environ.get('BACKEND_API_URL'):
+    print(
+        'WARNING: BACKEND_API_URL env var not set, '
+        f'falling back to {BACKEND_API_URL}'
     )
 
 # Ensure BACKEND_API_URL doesn't end with a slash
