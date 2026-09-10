@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-change-me-in-production'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['blofront.up.railway.app']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,8 +66,19 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Backend API URL
-BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'http://back:8000')
+BACKEND_API_URL = os.environ.get('BACKEND_API_URL', '')
+
+if not BACKEND_API_URL:
+    raise ValueError(
+        'BACKEND_API_URL environment variable is not set. '
+        'Please set it in Railway to the URL of your backend service '
+        '(e.g. https://your-backend.up.railway.app)'
+    )
+
+# Ensure BACKEND_API_URL doesn't end with a slash
+BACKEND_API_URL = BACKEND_API_URL.rstrip('/')
 
 CSRF_TRUSTED_ORIGINS = [
     "https://blofront.up.railway.app",
+    "https://*.up.railway.app",
 ]
