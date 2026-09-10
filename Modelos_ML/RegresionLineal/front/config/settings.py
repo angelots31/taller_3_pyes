@@ -5,9 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-change-me-in-production'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['blofront.up.railway.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,3 +67,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Backend API URL
 BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'http://back:8000')
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://blofront.up.railway.app",
+]
