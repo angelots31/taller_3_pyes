@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app_predicc',
+    'app_predicc.apps.AppPrediccConfig',
 ]
 
 MIDDLEWARE = [
@@ -64,21 +64,3 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Backend API URL. Falls back to the Railway backend URL if the env var is missing,
-# so the app still boots; the env var takes precedence when set.
-BACKEND_API_URL = os.environ.get('BACKEND_API_URL', 'https://bloback.up.railway.app')
-
-if not os.environ.get('BACKEND_API_URL'):
-    print(
-        'WARNING: BACKEND_API_URL env var not set, '
-        f'falling back to {BACKEND_API_URL}'
-    )
-
-# Ensure BACKEND_API_URL doesn't end with a slash
-BACKEND_API_URL = BACKEND_API_URL.rstrip('/')
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://blofront.up.railway.app",
-    "https://*.up.railway.app",
-]

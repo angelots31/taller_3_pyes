@@ -1,50 +1,48 @@
+import os
 import requests
 from django.shortcuts import render
-from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
-def index(request):
-    return render(request, 'app_predicc/index.html')
+# El decorador @csrf_exempt apaga la validación de seguridad para este formulario
+@csrf_exempt
+def home(request):
+    context = {}
+    if request.method == 'POST':
+        area_m2 = request.POST.get('area_m2')
+        if area_m2:
+            try:
+                area_m2 = float(area_m2)
+                if area_m2 <= 0:
+                    context['error'] = 'La superficie debe ser mayor a 0 m².'
+                    return render(request, 'index.html', context)
+            except ValueError:
+                context['error'] = 'El valor ingresado no es válido.'
+                return render(request, 'index.html', context)
 
+            try:
+                # Usa la variable de entorno de Railway, o la URL del backend si estás en tu PC
+                api_url = os.environ.get(
+                    "API_URL",
+                    "https://bloback.up.railway.app/predict"
+                )
+                payload = {"area_m2": area_m2}
 
-def predict(request):
-    area_m2 = request.POST.get('area_m2')
-    context = {
-        'area_m2': area_m2,
-        'predicted_price': None,
-        'error': None,
-    }
+                response = requests.post(api_url, json=payload, timeout=10)
 
-    if not area_m2:
-        context['error'] = 'Por favor ingresa un valor de superficie.'
-        return render(request, 'app_predicc/index.html', context)
+                if response.status_code == 200:
+                    data = response.json()
+                    precio_formateado = f"${data['predicted_price']:,.2f}"
+                    context['resultado'] = precio_formateado
+                    context['area'] = area_m2
+                else:
+                    context['error'] = f"Error del servidor: {response.status_code}"
 
-    try:
-        area_m2 = float(area_m2)
-        if area_m2 <= 0:
-            context['error'] = 'La superficie debe ser mayor a 0 m².'
-            return render(request, 'app_predicc/index.html', context)
-    except ValueError:
-        context['error'] = 'El valor ingresado no es válido.'
-        return render(request, 'app_predicc/index.html', context)
+            except requests.exceptions.ConnectionError:
+                context['error'] = 'No se pudo conectar con el servidor de predicción.'
+            except requests.exceptions.Timeout:
+                context['error'] = 'El servidor tardó demasiado en responder.'
+            except requests.exceptions.RequestException:
+                context['error'] = "No se pudo conectar con la API."
 
-    try:
-        api_url = f"{settings.BACKEND_API_URL}/predict"
-        response = requests.post(
-            api_url,
-            json={"area_m2": area_m2},
-            timeout=10,
-        )
-        response.raise_for_status()
-        data = response.json()
-        context['predicted_price'] = data['predicted_price']
-    except requests.exceptions.ConnectionError:
-        context['error'] = 'No se pudo conectar con el servidor de predicción.'
-    except requests.exceptions.Timeout:
-        context['error'] = 'El servidor tardó demasiado en responder.'
-    except requests.exceptions.HTTPError as e:
-        context['error'] = f'Error del servidor: {e.response.status_code}'
-    except Exception as e:
-        context['error'] = f'Error inesperado: {str(e)}'
-
-    return render(request, 'app_predicc/index.html', context)
+    return render(request, 'index.html', context)
