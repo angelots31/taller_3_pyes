@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 
 # datos de entrenamiento (x) y etiquetas (y)
 x = np.array([[40], [50], [60], [85], [100], [150]])
-y = np.array([100000, 120000, 150000, 200000, 250000, 300000])
+y = np.array([10000000, 12000000, 15000000, 20000000, 25000000, 30000000])
 
 # entrenar el modelo de regresion lineal
 model = LinearRegression()
