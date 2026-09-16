@@ -32,7 +32,9 @@ def home(request):
 
                 if response.status_code == 200:
                     data = response.json()
-                    precio_formateado = f"${data['predicted_price']:,.2f}"
+                    # Formato colombiano: $194.506 (punto como separador de miles)
+                    precio = round(data['predicted_price'])
+                    precio_formateado = f"${precio:,}".replace(",", ".")
                     context['resultado'] = precio_formateado
                     context['area'] = area_m2
                 else:
