@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visión Artificial - Detección en Tiempo Real</title>
-    <link rel="shortcut icon" href="logosena.png" type="image/x-icon">
+    <title>Anglo Vision · Detección de Rostros en Tiempo Real</title>
+    <link rel="shortcut icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕵️</text></svg>">
 
-    <meta name="author" content="Carlos Andres Castro Jaramillo">
+    <meta name="author" content="Anglo">
     <meta name="description"
-        content="Visión Artificial con OpenCV: Detecta rostros en imágenes y video en tiempo real. Aprende a procesar imágenes usando Python y OpenCV.">
+        content="Visión Artificial con OpenCV: Detecta rostros en imágenes y video en tiempo real. Proyecto Anglo.">
     <meta name="keywords"
         content="visión artificial, OpenCV, detección de rostros, procesamiento de imágenes, Python, machine learning, análisis de imágenes, cámara web, detección en tiempo real">
 
-    <meta name="theme-color" content="#212529">
+    <meta name="theme-color" content="#FFD93D">
     <meta name="MobileOptimized" content="width">
     <meta name="HandheldFriendly" content="true">
     <meta name="mobile-web-app-capable" content="yes">
@@ -21,16 +22,20 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
 
-    <header class="bg-dark text-white text-center py-5 shadow-sm">
+    <header class="cartoon-header text-center py-5">
         <div class="container">
-            <h1 class="display-5 fw-bold">Procesamiento de Imágenes con OpenCV</h1>
-            <p class="lead mb-0 text-secondary">Detecta rostros subiendo una foto o directamente en vivo usando tu
-                cámara web.</p>
+            <h1 class="display-5 fw-bold mb-2">🕵️ Anglo Vision Lab</h1>
+            <p class="lead mb-0 fw-medium">¡Conviértete en detective! Sube una foto o usa tu cámara web y descubre
+                rostros al instante. 📸</p>
         </div>
     </header>
 
@@ -38,9 +43,9 @@
 
         <div class="row justify-content-center mb-4">
             <div class="col-auto">
-                <div class="btn-group shadow-sm" role="group" aria-label="Selector de modo de entrada">
-                    <button type="button" id="btnModeUpload" class="btn btn-primary active px-4">Subir Archivo</button>
-                    <button type="button" id="btnModeCamera" class="btn btn-outline-primary px-4">Usar Cámara</button>
+                <div class="btn-group shadow-none" role="group" aria-label="Selector de modo de entrada">
+                    <button type="button" id="btnModeUpload" class="btn btn-primary active px-4">📤 Subir Archivo</button>
+                    <button type="button" id="btnModeCamera" class="btn btn-outline-primary px-4">📷 Usar Cámara</button>
                 </div>
             </div>
         </div>
@@ -48,34 +53,32 @@
         <div class="row g-4 justify-content-center">
             <div class="col-lg-5">
 
-                <div id="sectionUpload" class="card h-100 shadow-sm">
+                <div id="sectionUpload" class="card h-100">
                     <div class="card-body d-flex flex-column justify-content-between p-4">
-                        <div id="dropZone"
-                            class="position-relative border border-3 border-dashed rounded p-5 text-center bg-white mb-3 transition">
-                            <p class="mb-0 text-muted fw-semibold">Arrastra tu imagen aquí o haz clic para buscar</p>
+                        <div id="dropZone" class="drop-zone position-relative p-5 text-center mb-3">
+                            <p class="fs-1 mb-2">🖼️</p>
+                            <p class="mb-0 fw-semibold">¡Arrastra tu imagen aquí o haz clic para buscarla!</p>
                             <input type="file" id="fileInput" class="drop-zone-input" accept="image/*"
                                 aria-label="Seleccionar imagen">
                         </div>
-                        <button id="btnProcess" class="btn btn-success w-100 py-2 fw-bold" disabled>
-                            Procesar Imagen
+                        <button id="btnProcess" class="btn btn-success w-100 py-2" disabled>
+                            ✨ Procesar Imagen
                         </button>
                     </div>
                 </div>
 
-                <div id="sectionCamera" class="card h-100 shadow-sm d-none">
+                <div id="sectionCamera" class="card h-100 d-none">
                     <div class="card-body text-center p-4">
-                        <div class="bg-black rounded overflow-hidden shadow-inner d-flex justify-content-center align-items-center mb-3"
+                        <div class="camera-frame d-flex justify-content-center align-items-center mb-3"
                             style="min-height: 250px;">
                             <video id="webcam" autoplay playsinline muted class="w-100"></video>
                             <canvas id="canvasFrame" width="400" height="300" class="d-none"></canvas>
                         </div>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
-                            <button id="btnStartCamera" class="btn btn-primary px-4 fw-semibold">Encender
-                                Cámara</button>
-                            <button id="btnToggleCamera" class="btn btn-warning px-3 fw-semibold"
+                            <button id="btnStartCamera" class="btn btn-primary px-4">🎥 Encender Cámara</button>
+                            <button id="btnToggleCamera" class="btn btn-warning px-3"
                                 style="display: none;">🔄 Cambiar Cámara</button>
-                            <button id="btnStopCamera" class="btn btn-danger px-4 fw-semibold" disabled>Apagar
-                                Cámara</button>
+                            <button id="btnStopCamera" class="btn btn-danger px-4" disabled>⏹ Apagar Cámara</button>
                         </div>
                     </div>
                 </div>
@@ -83,37 +86,36 @@
             </div>
 
             <div class="col-lg-7">
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100">
                     <div class="card-body p-4 d-flex flex-column justify-content-start">
 
-                        <div id="metricsZone" class="alert alert-success d-flex align-items-center mb-3 d-none"
+                        <div id="metricsZone" class="alert-cartoon d-flex align-items-center mb-3 d-none"
                             role="alert">
                             <div>
-                                <h6 class="alert-heading fw-bold mb-1">Resultados del Análisis:</h6>
+                                <h6 class="fw-bold mb-1">🎉 ¡Análisis listo!</h6>
                                 <p class="mb-0">Rostros detectados en la escena: <span id="faceCount"
-                                        class="badge bg-success fs-6">0</span></p>
+                                        class="badge fs-6">0</span></p>
                             </div>
                         </div>
 
                         <div class="row g-3">
                             <div id="boxOriginal" class="col-sm-6 text-center">
-                                <div
-                                    class="p-3 bg-light rounded border border-secondary border-opacity-10 h-100 d-flex flex-column justify-content-center align-items-center">
-                                    <h6 class="text-muted mb-2">Vista Previa / Origen</h6>
-                                    <img id="imgOriginal" src="" alt="Vista previa" class="rounded shadow-sm d-none">
+                                <div class="result-box p-3 h-100 d-flex flex-column justify-content-center align-items-center">
+                                    <h6 class="fw-bold mb-2 opacity-75">🖼️ Vista Previa</h6>
+                                    <img id="imgOriginal" src="" alt="Vista previa" class="d-none">
                                 </div>
                             </div>
 
                             <div class="col-sm-6 text-center mx-auto">
-                                <div class="p-3 bg-light rounded border border-secondary border-opacity-10 h-100 d-flex flex-column justify-content-center align-items-center position-relative"
+                                <div class="result-box p-3 h-100 d-flex flex-column justify-content-center align-items-center position-relative"
                                     style="min-height: 180px;">
-                                    <h6 class="text-muted mb-2">Resultado del Servidor</h6>
+                                    <h6 class="fw-bold mb-2 opacity-75">🎯 Resultado del Servidor</h6>
 
-                                    <img id="imgResult" src="" alt="Detección de rostros"
-                                        class="rounded shadow-sm d-none">
+                                    <img id="imgResult" src="" alt="Detección de rostros" class="d-none">
 
-                                    <div id="loader" class="spinner-border text-primary my-3 d-none" role="status">
-                                        <span class="visually-hidden">Procesando...</span>
+                                    <div id="loader" class="text-center my-3 d-none" role="status">
+                                        <div class="loader-cartoon">🕵️</div>
+                                        <p class="small fw-bold mb-0 mt-1">¡Analizando...</p>
                                     </div>
                                 </div>
                             </div>
@@ -125,10 +127,10 @@
         </div>
     </main>
 
-    <footer class="bg-dark text-secondary text-center py-4 border-top border-secondary border-opacity-20 mt-auto">
+    <footer class="cartoon-footer text-center py-4 mt-auto">
         <div class="container">
-            <p class="mb-1 small">&copy; 2026 - Python y Machine Learning</p>
-            <p class="mb-0 small">By Carlos Andrés Castro Jaramillo</p>
+            <p class="mb-1 small">© 2026 Anglo · Visión Artificial con OpenCV</p>
+            <p class="mb-0 small">Hecho con 💛 y Python en Anglo</p>
         </div>
     </footer>
 
